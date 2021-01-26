@@ -15,3 +15,9 @@ npm install
 ```bash
 npm run dev
 ```
+
+### Related Links
+
+- ProseMirror - https://prosemirror.net/
+- CodeMirror 6 - https://codemirror.net/6/
+- Migrating to CodeMirror 6 - https://codemirror.net/6/docs/migration/

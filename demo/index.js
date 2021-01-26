@@ -1,14 +1,14 @@
-import { EditorState } from "prosemirror-state";
-import { EditorView } from "prosemirror-view";
-import { buildMenuItems, exampleSetup } from "prosemirror-example-setup";
-import { MenuItem } from "prosemirror-menu";
-import { setBlockType } from "prosemirror-commands";
+import { EditorState, Selection } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import { buildMenuItems, exampleSetup } from 'prosemirror-example-setup';
+import { MenuItem } from 'prosemirror-menu';
+import { setBlockType } from 'prosemirror-commands';
 
-import "./index.scss";
-import "./editor.scss";
+import './index.scss';
+import './editor.scss';
 
-import { schema, CodeMirrorView } from "../index.ts";
-import doc from "./doc";
+import { schema, CodeMirrorView } from '../index.ts';
+import doc from './doc';
 
 const nodeIsActive = (state, nodeType) => {
   const { $from, to, node } = state.selection;
@@ -23,9 +23,9 @@ const nodeIsActive = (state, nodeType) => {
 const menu = buildMenuItems(schema);
 menu.blockMenu[0].push(
   new MenuItem({
-    label: "CodeMirror",
+    label: 'CodeMirror',
     enable(state) {
-      return setBlockType(schema.nodes.code_block)(state);
+      return setBlockType(schema.nodes.code_mirror)(state);
     },
     active(state) {
       return nodeIsActive(state, schema.nodes.code_mirror);
@@ -45,7 +45,7 @@ const state = EditorState.create({
   }),
 });
 
-window.view = new EditorView(document.querySelector("#editor"), {
+new EditorView(document.querySelector('#editor'), {
   state,
   nodeViews: {
     code_mirror: (...attrs) => new CodeMirrorView(...attrs),

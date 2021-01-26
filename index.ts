@@ -1,23 +1,23 @@
-import { Selection, TextSelection } from "prosemirror-state";
-import { EditorView, NodeView } from "prosemirror-view";
-import { Schema, Node as ProsemirrorNode, NodeSpec } from "prosemirror-model";
-import { nodes as basicNodes, marks } from "prosemirror-schema-basic";
-import { exitCode } from "prosemirror-commands";
-import { EditorState as CMState, Transaction as CMTransaction, Text } from "@codemirror/state";
-import { Command, EditorView as CMView, keymap } from "@codemirror/view";
-import { basicSetup } from "@codemirror/basic-setup";
-import { javascript } from "@codemirror/lang-javascript";
+import { Selection, TextSelection } from 'prosemirror-state';
+import { EditorView, NodeView } from 'prosemirror-view';
+import { Schema, Node as ProsemirrorNode, NodeSpec } from 'prosemirror-model';
+import { nodes as basicNodes, marks } from 'prosemirror-schema-basic';
+import { exitCode } from 'prosemirror-commands';
+import { EditorState as CMState, Transaction as CMTransaction, Text } from '@codemirror/state';
+import { Command, EditorView as CMView, keymap } from '@codemirror/view';
+import { basicSetup } from '@codemirror/basic-setup';
+import { javascript } from '@codemirror/lang-javascript';
 
 export const code_mirror: NodeSpec = {
-  content: "text*",
-  marks: "",
-  group: "block",
+  content: 'text*',
+  marks: '',
+  group: 'block',
   code: true,
   defining: true,
   isolating: true,
-  parseDOM: [{ tag: "pre", preserveWhitespace: "full" }],
+  parseDOM: [{ tag: 'pre', preserveWhitespace: 'full' }],
   toDOM() {
-    return ["pre", ["code", 0]];
+    return ['pre', ['code', 0]];
   },
 };
 
@@ -64,6 +64,7 @@ export class CodeMirrorView implements NodeView {
   cm: CMView;
 
   getPos: () => number;
+  updating = false;
 
   constructor(node: ProsemirrorNode, view: EditorView, getPos: () => number) {
     // Store for later
@@ -72,50 +73,61 @@ export class CodeMirrorView implements NodeView {
 
     this.getPos = getPos;
 
-    // Create a CodeMirror instance
+    const changeFilter = CMState.changeFilter.of((tr) => {
+      if (!tr.docChanged && !this.updating) {
+        this.forwardSelection();
+      }
+      return true;
+    });
+
+    // Create a CodeMirror instancew
     this.cm = new CMView({
-      state: CMState.create({
-        doc: this.node.textContent,
-        extensions: [
-          basicSetup,
-          javascript(),
-          keymap.of([
-            ...[
-              {
-                key: "ArrowUp",
-                run: this.mayBeEscape("line", -1),
-              },
-              {
-                key: "ArrowLeft",
-                run: this.mayBeEscape("char", -1),
-              },
-              {
-                key: "ArrowDown",
-                run: this.mayBeEscape("line", 1),
-              },
-              {
-                key: "ArrowRight",
-                run: this.mayBeEscape("char", 1),
-              },
-              {
-                key: "Ctrl-Enter",
-                run: () => {
-                  if (exitCode(this.view.state, this.view.dispatch)) {
-                    this.view.focus();
-                    return true;
-                  }
-                  return false;
-                },
-              },
-            ],
-          ]),
-        ],
-      }),
-      dispatch: this.valueChanged.bind(this),
+      dispatch: this.dispatch.bind(this),
     });
 
     // The editor's outer node is our DOM representation
     this.dom = this.cm.dom;
+
+    const cmState = CMState.create({
+      doc: this.node.textContent,
+      extensions: [
+        changeFilter,
+        basicSetup,
+        javascript(),
+        keymap.of([
+          ...[
+            {
+              key: 'ArrowUp',
+              run: this.mayBeEscape('line', -1),
+            },
+            {
+              key: 'ArrowLeft',
+              run: this.mayBeEscape('char', -1),
+            },
+            {
+              key: 'ArrowDown',
+              run: this.mayBeEscape('line', 1),
+            },
+            {
+              key: 'ArrowRight',
+              run: this.mayBeEscape('char', 1),
+            },
+            {
+              key: 'Ctrl-Enter',
+              run() {
+                if (exitCode(this.view.state, this.view.dispatch)) {
+                  this.view.focus();
+                  return true;
+                }
+                return false;
+              },
+            },
+          ],
+        ]),
+      ],
+    });
+
+    this.cm.setState(cmState);
   }
 
   forwardSelection() {
@@ -137,11 +149,10 @@ export class CodeMirrorView implements NodeView {
     return TextSelection.create(doc, anchor + offset, head + offset);
   }
 
-  valueChanged(cmTr: CMTransaction) {
+  dispatch(cmTr: CMTransaction) {
     this.cm.setState(cmTr.state);
-    this.forwardSelection();
 
-    if (cmTr.docChanged) {
+    if (cmTr.docChanged && !this.updating) {
       const start = this.getPos() + 1;
 
       const cmValue = cmTr.state.doc.toString();
@@ -154,10 +165,11 @@ export class CodeMirrorView implements NodeView {
       const content = change.text ? schema.text(change.text) : null;
       const tr = this.view.state.tr.replaceWith(change.from + start, change.to + start, content);
       this.view.dispatch(tr);
+      this.forwardSelection();
     }
   }
 
-  mayBeEscape(unit: "char" | "line", dir: -1 | 1): Command {
+  mayBeEscape(unit: 'char' | 'line', dir: -1 | 1): Command {
     return (view) => {
       const { state } = view;
       const { selection } = state;
@@ -177,7 +189,7 @@ export class CodeMirrorView implements NodeView {
       if (
         hasSelection ||
         pos.line !== (dir < 0 ? firstLine : lastLine) ||
-        (unit === "char" && pos.ch !== (dir < 0 ? 0 : state.doc.line(pos.line).length))
+        (unit === 'char' && pos.ch !== (dir < 0 ? 0 : state.doc.line(pos.line).length))
       ) {
         return false;
       }
@@ -196,19 +208,33 @@ export class CodeMirrorView implements NodeView {
     }
 
     this.node = node;
-
     const change = computeChange(this.cm.state.doc.toString(), node.textContent);
+
     if (change) {
+      this.updating = true;
       this.cm.dispatch({
         changes: { from: change.from, to: change.to, insert: change.text },
       });
+      this.updating = false;
     }
 
     return true;
   }
 
-  selectNode() {
+  setSelection(anchor: number, head: number): void {
+    this.focus();
+    this.updating = true;
+    this.cm.dispatch({ selection: { anchor, head } });
+    this.updating = false;
+  }
+
+  focus() {
     this.cm.focus();
+    this.forwardSelection();
+  }
+
+  selectNode() {
+    this.focus();
   }
 
   stopEvent() {

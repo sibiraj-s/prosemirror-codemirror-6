@@ -3,7 +3,7 @@ import { EditorView, NodeView } from "prosemirror-view";
 import { Schema, Node as ProsemirrorNode, NodeSpec } from "prosemirror-model";
 import { nodes as basicNodes, marks } from "prosemirror-schema-basic";
 import { exitCode } from "prosemirror-commands";
-import { EditorState as CMState, Transaction as CMTransaction } from "@codemirror/state";
+import { EditorState as CMState, Transaction as CMTransaction, Text } from "@codemirror/state";
 import { Command, EditorView as CMView, keymap } from "@codemirror/view";
 import { basicSetup } from "@codemirror/basic-setup";
 import { javascript } from "@codemirror/lang-javascript";
@@ -196,6 +196,14 @@ export class CodeMirrorView implements NodeView {
     }
 
     this.node = node;
+
+    const change = computeChange(this.cm.state.doc.toString(), node.textContent);
+    if (change) {
+      this.cm.dispatch({
+        changes: { from: change.from, to: change.to, insert: change.text },
+      });
+    }
+
     return true;
   }
 

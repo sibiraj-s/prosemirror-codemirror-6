@@ -1,4 +1,4 @@
-# Prosemirror + Codemirror 6
+# ProseMirror + CodeMirror 6
 
 Based on the example from https://prosemirror.net/examples/codemirror/
 

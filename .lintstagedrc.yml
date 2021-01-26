@@ -1,1 +1,1 @@
-"*.{js,ts,json,scss,html,md}": prettier --write
+'*.{js,ts,json,scss,html,md,yml}': prettier --write

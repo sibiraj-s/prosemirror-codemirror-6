@@ -199,13 +199,13 @@ export class CodeMirrorView implements NodeView {
     return true;
   }
 
-  selectNode() { 
-    this.cm.focus() 
+  selectNode() {
+    this.cm.focus();
   }
-  
+
   stopEvent() {
-     return true 
-    }
+    return true;
+  }
 
   destroy() {
     this.cm.destroy();

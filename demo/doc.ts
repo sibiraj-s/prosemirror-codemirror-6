@@ -7,37 +7,37 @@ export default {
   type: "doc",
   content: [
     {
-      type: 'heading',
+      type: "heading",
       attrs: {
         level: 2,
-        align: null
+        align: null,
       },
       content: [
         {
-          type: 'text',
-          text: 'The code block is a code editor'
-        }
-      ]
+          type: "text",
+          text: "The code block is a code editor",
+        },
+      ],
     },
     {
-      type: 'paragraph',
+      type: "paragraph",
       attrs: {
-        align: null
+        align: null,
       },
       content: [
         {
-          type: 'text',
-          text: 'This editor has been wired up to render code blocks as instances of the CodeMirror'
+          type: "text",
+          text: "This editor has been wired up to render code blocks as instances of the CodeMirror",
         },
         {
-          type: 'text',
-          text: ' code editor, which provides syntax highlighting'
+          type: "text",
+          text: " code editor, which provides syntax highlighting",
         },
         {
-          type: 'text',
-          text: ', auto-indentation, and similar.'
-        }
-      ]
+          type: "text",
+          text: ", auto-indentation, and similar.",
+        },
+      ],
     },
     {
       type: "code_mirror",

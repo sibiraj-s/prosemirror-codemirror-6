@@ -1,9 +1,12 @@
-import { EditorState, Selection } from 'prosemirror-state';
+import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { buildMenuItems, exampleSetup } from 'prosemirror-example-setup';
 import { MenuItem } from 'prosemirror-menu';
 import { setBlockType } from 'prosemirror-commands';
 
+import 'prosemirror-menu/style/menu.css';
+import 'prosemirror-example-setup/style/style.css';
+import 'prosemirror-view/style/prosemirror.css';
 import './index.scss';
 import './editor.scss';
 

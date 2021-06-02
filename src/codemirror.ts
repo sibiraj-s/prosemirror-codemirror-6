@@ -66,12 +66,12 @@ export class CodeMirrorView implements NodeView {
   getPos: () => number;
   updating = false;
 
-  constructor(node: ProsemirrorNode, view: EditorView, getPos: () => number) {
+  constructor(node: ProsemirrorNode, view: EditorView, getPos: (() => number) | boolean) {
     // Store for later
     this.node = node;
     this.view = view;
 
-    this.getPos = getPos;
+    this.getPos = getPos as () => number;
 
     const changeFilter = CMState.changeFilter.of((tr) => {
       if (!tr.docChanged && !this.updating) {

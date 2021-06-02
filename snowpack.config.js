@@ -3,5 +3,9 @@
 
 /** @type {import("snowpack").SnowpackUserConfig } */
 module.exports = {
-  plugins: ["@snowpack/plugin-sass"],
+  plugins: ['@snowpack/plugin-sass'],
+  mount: {
+    public: { url: '/', static: true },
+    src: { url: '/dist' },
+  },
 };

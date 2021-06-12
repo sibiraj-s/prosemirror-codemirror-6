@@ -8,6 +8,7 @@
   "repository": "https://github.com/sibiraj-s/prosemirror-codemirror-6",
   "homepage": "https://github.com/sibiraj-s/prosemirror-codemirror-6",
   "bugs": "https://github.com/sibiraj-s/prosemirror-codemirror-6/issues",
+  "type": "module",
   "scripts": {
     "dev": "snowpack dev",
     "build": "snowpack build",

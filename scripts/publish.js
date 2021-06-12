@@ -1,10 +1,10 @@
-const util = require('node:util');
-const fs = require('node:fs');
-const path = require('node:path');
+import util from 'node:util';
+import fs from 'node:fs';
+import path from 'node:path';
 
-const prompts = require('prompts');
-const ghpages = require('gh-pages');
-const chalk = require('chalk');
+import prompts from 'prompts';
+import ghpages from 'gh-pages';
+import chalk from 'chalk';
 
 const publishAsync = util.promisify(ghpages.publish);
 

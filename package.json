@@ -18,8 +18,8 @@
     "@codemirror/basic-setup": "^0.18.2",
     "@codemirror/lang-javascript": "^0.18.0",
     "@codemirror/state": "^0.18.7",
-    "@codemirror/view": "^0.18.15",
-    "prosemirror-commands": "^1.1.8",
+    "@codemirror/view": "^0.18.16",
+    "prosemirror-commands": "^1.1.9",
     "prosemirror-example-setup": "^1.1.2",
     "prosemirror-menu": "^1.1.4",
     "prosemirror-model": "^1.14.1",
@@ -37,8 +37,8 @@
     "@types/prosemirror-view": "^1.17.1",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
-    "prettier": "^2.3.0",
-    "snowpack": "^3.5.4",
+    "prettier": "^2.3.1",
+    "snowpack": "^3.5.7",
     "typescript": "^4.3.2"
   }
 }

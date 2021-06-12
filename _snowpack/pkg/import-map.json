@@ -1,0 +1,18 @@
+{
+  "imports": {
+    "@codemirror/basic-setup": "./@codemirror/basic-setup.js",
+    "@codemirror/lang-javascript": "./@codemirror/lang-javascript.js",
+    "@codemirror/state": "./@codemirror/state.js",
+    "@codemirror/view": "./@codemirror/view.js",
+    "prosemirror-commands": "./prosemirror-commands.js",
+    "prosemirror-example-setup": "./prosemirror-example-setup.js",
+    "prosemirror-example-setup/style/style.css": "./prosemirror-example-setup/style/style.css",
+    "prosemirror-menu": "./prosemirror-menu.js",
+    "prosemirror-menu/style/menu.css": "./prosemirror-menu/style/menu.css",
+    "prosemirror-model": "./prosemirror-model.js",
+    "prosemirror-schema-basic": "./prosemirror-schema-basic.js",
+    "prosemirror-state": "./prosemirror-state.js",
+    "prosemirror-view": "./prosemirror-view.js",
+    "prosemirror-view/style/prosemirror.css": "./prosemirror-view/style/prosemirror.css"
+  }
+}

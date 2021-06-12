@@ -1,0 +1,10 @@
+// [snowpack] add styles to the page (skip if no document exists)
+if (typeof document !== 'undefined') {
+  const code = "/* Add space around the hr to make clicking it easier */\n\n.ProseMirror-example-setup-style hr {\n  padding: 2px 10px;\n  border: none;\n  margin: 1em 0;\n}\n\n.ProseMirror-example-setup-style hr:after {\n  content: \"\";\n  display: block;\n  height: 1px;\n  background-color: silver;\n  line-height: 2px;\n}\n\n.ProseMirror ul, .ProseMirror ol {\n  padding-left: 30px;\n}\n\n.ProseMirror blockquote {\n  padding-left: 1em;\n  border-left: 3px solid #eee;\n  margin-left: 0; margin-right: 0;\n}\n\n.ProseMirror-example-setup-style img {\n  cursor: default;\n}\n\n.ProseMirror-prompt {\n  background: white;\n  padding: 5px 10px 5px 15px;\n  border: 1px solid silver;\n  position: fixed;\n  border-radius: 3px;\n  z-index: 11;\n  box-shadow: -.5px 2px 5px rgba(0, 0, 0, .2);\n}\n\n.ProseMirror-prompt h5 {\n  margin: 0;\n  font-weight: normal;\n  font-size: 100%;\n  color: #444;\n}\n\n.ProseMirror-prompt input[type=\"text\"],\n.ProseMirror-prompt textarea {\n  background: #eee;\n  border: none;\n  outline: none;\n}\n\n.ProseMirror-prompt input[type=\"text\"] {\n  padding: 0 4px;\n}\n\n.ProseMirror-prompt-close {\n  position: absolute;\n  left: 2px; top: 1px;\n  color: #666;\n  border: none; background: transparent; padding: 0;\n}\n\n.ProseMirror-prompt-close:after {\n  content: \"✕\";\n  font-size: 12px;\n}\n\n.ProseMirror-invalid {\n  background: #ffc;\n  border: 1px solid #cc7;\n  border-radius: 4px;\n  padding: 5px 10px;\n  position: absolute;\n  min-width: 10em;\n}\n\n.ProseMirror-prompt-buttons {\n  margin-top: 5px;\n  display: none;\n}\n";
+
+  const styleEl = document.createElement("style");
+  const codeEl = document.createTextNode(code);
+  styleEl.type = 'text/css';
+  styleEl.appendChild(codeEl);
+  document.head.appendChild(styleEl);
+}

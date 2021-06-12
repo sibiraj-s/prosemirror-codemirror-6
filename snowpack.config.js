@@ -8,4 +8,8 @@ module.exports = {
     public: { url: '/', static: true },
     src: { url: '/dist' },
   },
+  buildOptions: {
+    baseUrl: '/prosemirror-codemirror-6/',
+    clean: true,
+  },
 };

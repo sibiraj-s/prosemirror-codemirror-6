@@ -1,0 +1,49 @@
+const util = require('node:util');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const prompts = require('prompts');
+const ghpages = require('gh-pages');
+const chalk = require('chalk');
+
+const publishAsync = util.promisify(ghpages.publish);
+
+const ghPagesOptions = {
+  branch: 'gh-pages',
+  message: `Update ${new Date().toISOString()}`,
+  dotfiles: true,
+};
+
+const questions = [
+  {
+    name: 'publish',
+    type: 'confirm',
+    message: `Do You want to publish the '${chalk.cyan('build')}' directory to '${chalk.cyan(
+      ghPagesOptions.branch
+    )}' branch?`,
+  },
+];
+
+const publish = async () => {
+  try {
+    if (process.env.CI) {
+      prompts.inject([true]);
+    }
+
+    const answers = await prompts(questions);
+
+    if (!answers.publish) {
+      return;
+    }
+
+    await fs.promises.writeFile(path.join(process.cwd(), 'build', '.nojekyll'), '', 'utf-8');
+    console.log(chalk.green(`\nCreated ${chalk.cyan("'.nojekyll'")} file in the build directory`));
+
+    await publishAsync('build', ghPagesOptions);
+    console.log(chalk.green(`\nBuild published successfully to ${chalk.cyan("'gh-pages'")} \n`));
+  } catch (err) {
+    console.log(chalk.red('Unable to publish build. Error:'), err);
+  }
+};
+
+publish();

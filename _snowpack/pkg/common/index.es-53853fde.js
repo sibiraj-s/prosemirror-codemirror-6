@@ -2913,6 +2913,12 @@ NodeContext.prototype.applyPending = function applyPending (nextType) {
   }
 };
 
+NodeContext.prototype.inlineContext = function inlineContext (node) {
+  if (this.type) { return this.type.inlineContent }
+  if (this.content.length) { return this.content[0].isInline }
+  return node.parentNode && !blockTags.hasOwnProperty(node.parentNode.nodeName.toLowerCase())
+};
+
 var ParseContext = function ParseContext(parser, options, open) {
   // : DOMParser The parser we are using.
   this.parser = parser;
@@ -2961,7 +2967,7 @@ ParseContext.prototype.addTextNode = function addTextNode (dom) {
   var value = dom.nodeValue;
   var top = this.top;
   if (top.options & OPT_PRESERVE_WS_FULL ||
-      (top.type ? top.type.inlineContent : top.content.length && top.content[0].isInline) ||
+      top.inlineContext(dom) ||
       /[^ \t\r\n\u000c]/.test(value)) {
     if (!(top.options & OPT_PRESERVE_WS)) {
       value = value.replace(/[ \t\r\n\u000c]+/g, " ");

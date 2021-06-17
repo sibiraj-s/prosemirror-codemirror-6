@@ -1,5 +1,5 @@
 import { l as EditorState, T as Transaction, F as Facet, S as StateField, d as countColumn, e as Text, b as StateEffect, M as MapMode, E as EditorSelection, c as combineConfig, P as Prec, g as codePointAt, f as codePointSize, j as fromCodePoint } from './index-c694cd06.js';
-import { V as ViewPlugin, D as Direction, E as EditorView, l as logException, b as Decoration, k as keymap, W as WidgetType, S as StyleModule, c as RangeSetBuilder } from './index-4410d11b.js';
+import { V as ViewPlugin, D as Direction, E as EditorView, l as logException, b as Decoration, k as keymap, W as WidgetType, S as StyleModule, c as RangeSetBuilder } from './index-6e154c1b.js';
 
 /// The default maximum length of a `TreeBuffer` node.
 const DefaultBufferLength = 1024;
@@ -2967,6 +2967,7 @@ class ActiveSource {
         this.explicit = explicit;
     }
     hasResult() { return false; }
+    explicitAt(_pos) { return this.explicit; }
     update(tr, conf) {
         let event = tr.annotation(Transaction.userEvent), value = this;
         if (event == "input" || event == "delete")
@@ -2995,30 +2996,33 @@ class ActiveSource {
     }
 }
 class ActiveResult extends ActiveSource {
-    constructor(source, explicit, result, from, to, span) {
-        super(source, 2 /* Result */, explicit);
+    constructor(source, explicitPos, result, from, to, span) {
+        super(source, 2 /* Result */, explicitPos > -1);
+        this.explicitPos = explicitPos;
         this.result = result;
         this.from = from;
         this.to = to;
         this.span = span;
     }
     hasResult() { return true; }
+    explicitAt(pos) { return this.explicitPos == pos; }
+    mapExplicit(mapping) {
+        return this.explicitPos < 0 ? -1 : mapping.mapPos(this.explicitPos);
+    }
     handleUserEvent(tr, type, conf) {
         let from = tr.changes.mapPos(this.from), to = tr.changes.mapPos(this.to, 1);
         let pos = cur(tr.state);
         if ((this.explicit ? pos < from : pos <= from) || pos > to)
             return new ActiveSource(this.source, type == "input" && conf.activateOnTyping ? 1 /* Pending */ : 0 /* Inactive */, false);
         if (this.span && (from == to || this.span.test(tr.state.sliceDoc(from, to))))
-            return new ActiveResult(this.source, this.explicit, this.result, from, to, this.span);
-        return new ActiveSource(this.source, 1 /* Pending */, this.explicit);
+            return new ActiveResult(this.source, this.mapExplicit(tr.changes), this.result, from, to, this.span);
+        return new ActiveSource(this.source, 1 /* Pending */, false);
     }
     handleChange(tr) {
-        return tr.changes.touchesRange(this.from, this.to)
-            ? new ActiveSource(this.source, 0 /* Inactive */, false)
-            : new ActiveResult(this.source, this.explicit, this.result, tr.changes.mapPos(this.from), tr.changes.mapPos(this.to, 1), this.span);
+        return tr.changes.touchesRange(this.from, this.to) ? new ActiveSource(this.source, 0 /* Inactive */, false) : this.map(tr.changes);
     }
     map(mapping) {
-        return new ActiveResult(this.source, this.explicit, this.result, mapping.mapPos(this.from), mapping.mapPos(this.to, 1), this.span);
+        return new ActiveResult(this.source, this.mapExplicit(mapping), this.result, mapping.mapPos(this.from), mapping.mapPos(this.to, 1), this.span);
     }
 }
 const startCompletionEffect = /*@__PURE__*/StateEffect.define();
@@ -3160,7 +3164,7 @@ const completionPlugin = /*@__PURE__*/ViewPlugin.fromClass(class {
     }
     startQuery(active) {
         let { state } = this.view, pos = cur(state);
-        let context = new CompletionContext(state, pos, active.explicit);
+        let context = new CompletionContext(state, pos, active.explicitAt(pos));
         let pending = new RunningQuery(active.source, context);
         this.running.push(pending);
         Promise.resolve(active.source(context)).then(result => {
@@ -3194,7 +3198,7 @@ const completionPlugin = /*@__PURE__*/ViewPlugin.fromClass(class {
                 continue;
             this.running.splice(i--, 1);
             if (query.done) {
-                let active = new ActiveResult(query.source, query.context.explicit, query.done, query.done.from, (_a = query.done.to) !== null && _a !== void 0 ? _a : cur(query.updates.length ? query.updates[0].startState : this.view.state), query.done.span ? ensureAnchor(query.done.span, true) : null);
+                let active = new ActiveResult(query.source, query.context.explicit ? query.context.pos : -1, query.done, query.done.from, (_a = query.done.to) !== null && _a !== void 0 ? _a : cur(query.updates.length ? query.updates[0].startState : this.view.state), query.done.span ? ensureAnchor(query.done.span, true) : null);
                 // Replay the transactions that happened since the start of
                 // the request and see if that preserves the result
                 for (let tr of query.updates)

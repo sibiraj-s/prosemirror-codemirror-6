@@ -2913,6 +2913,8 @@ class DocView extends ContentView {
         // FIXME need to handle the case where the selection falls inside a block range
         let anchor = this.domAtPos(main.anchor);
         let head = main.empty ? anchor : this.domAtPos(main.head);
+        // Always reset on Firefox when next to an uneditable node to
+        // avoid invisible cursor bugs (#111)
         if (browser.gecko && main.empty && betweenUneditable(anchor)) {
             let dummy = document.createTextNode("");
             this.view.observer.ignore(() => anchor.node.insertBefore(dummy, anchor.node.childNodes[anchor.offset] || null));
@@ -2922,9 +2924,6 @@ class DocView extends ContentView {
         let domSel = this.view.observer.selectionRange;
         // If the selection is already here, or in an equivalent position, don't touch it
         if (force || !domSel.focusNode ||
-            // Always reset on Firefox when next to an uneditable node to
-            // avoid invisible cursor bugs (#111)
-            (browser.gecko && main.empty && nextToUneditable(domSel.focusNode, domSel.focusOffset)) ||
             !isEquivalentPosition(anchor.node, anchor.offset, domSel.anchorNode, domSel.anchorOffset) ||
             !isEquivalentPosition(head.node, head.offset, domSel.focusNode, domSel.focusOffset)) {
             this.view.observer.ignore(() => {
@@ -2967,6 +2966,8 @@ class DocView extends ContentView {
         this.impreciseHead = head.precise ? null : new DOMPos(domSel.focusNode, domSel.focusOffset);
     }
     enforceCursorAssoc() {
+        if (this.view.composing)
+            return;
         let cursor = this.view.state.selection.main;
         let sel = getSelection(this.root);
         if (!cursor.empty || !cursor.assoc || !sel.modify)
@@ -3017,7 +3018,10 @@ class DocView extends ContentView {
     coordsAt(pos, side) {
         for (let off = this.length, i = this.children.length - 1;; i--) {
             let child = this.children[i], start = off - child.breakAfter - child.length;
-            if (pos > start || pos == start && (child.type == BlockType.Text || !i || this.children[i - 1].breakAfter))
+            if (pos > start ||
+                (pos == start && child.type != BlockType.WidgetBefore && child.type != BlockType.WidgetAfter &&
+                    (!i || side == 2 || this.children[i - 1].breakAfter ||
+                        (this.children[i - 1].type == BlockType.WidgetBefore && side > -2))))
                 return child.coordsAt(pos - start, side);
             off = start;
         }
@@ -6670,11 +6674,9 @@ class EditorView {
         this.viewState.forEachLine(from, to, f, ensureTop(docTop, this.contentDOM));
     }
     /**
-    Find the extent and height of the visual line (the content shown
-    in the editor as a line, which may be smaller than a document
-    line when broken up by block widgets, or bigger than a document
-    line when line breaks are covered by replaced decorations) at
-    the given position.
+    Find the extent and height of the visual line (a range delimited
+    on both sides by either non-[hidden](https://codemirror.net/6/docs/ref/#view.Decoration^range)
+    line breaks, or the start/end of the document) at the given position.
     
     Vertical positions are computed relative to the `docTop`
     argument, which defaults to 0 for this method. You can pass
@@ -7362,7 +7364,17 @@ function getBase(view) {
 function wrappedLine(view, pos, inside) {
     let range = EditorSelection.cursor(pos);
     return { from: Math.max(inside.from, view.moveToLineBoundary(range, false, true).from),
-        to: Math.min(inside.to, view.moveToLineBoundary(range, true, true).from) };
+        to: Math.min(inside.to, view.moveToLineBoundary(range, true, true).from),
+        type: BlockType.Text };
+}
+function blockAt(view, pos) {
+    let line = view.visualLineAt(pos);
+    if (Array.isArray(line.type))
+        for (let l of line.type) {
+            if (l.to > pos || l.to == pos && (l.to == line.to || l.type == BlockType.Text))
+                return l;
+        }
+    return line;
 }
 function measureRange(view, range) {
     if (range.to <= view.viewport.from || range.from >= view.viewport.to)
@@ -7373,22 +7385,25 @@ function measureRange(view, range) {
     let lineStyle = window.getComputedStyle(content.firstChild);
     let leftSide = contentRect.left + parseInt(lineStyle.paddingLeft);
     let rightSide = contentRect.right - parseInt(lineStyle.paddingRight);
-    let visualStart = view.visualLineAt(from);
-    let visualEnd = view.visualLineAt(to);
+    let startBlock = blockAt(view, from), endBlock = blockAt(view, to);
+    let visualStart = startBlock.type == BlockType.Text ? startBlock : null;
+    let visualEnd = endBlock.type == BlockType.Text ? endBlock : null;
     if (view.lineWrapping) {
-        visualStart = wrappedLine(view, from, visualStart);
-        visualEnd = wrappedLine(view, to, visualEnd);
+        if (visualStart)
+            visualStart = wrappedLine(view, from, visualStart);
+        if (visualEnd)
+            visualEnd = wrappedLine(view, to, visualEnd);
     }
-    if (visualStart.from == visualEnd.from) {
+    if (visualStart && visualEnd && visualStart.from == visualEnd.from) {
         return pieces(drawForLine(range.from, range.to, visualStart));
     }
     else {
-        let top = drawForLine(range.from, null, visualStart);
-        let bottom = drawForLine(null, range.to, visualEnd);
+        let top = visualStart ? drawForLine(range.from, null, visualStart) : drawForWidget(startBlock, false);
+        let bottom = visualEnd ? drawForLine(null, range.to, visualEnd) : drawForWidget(endBlock, true);
         let between = [];
-        if (visualStart.to < visualEnd.from - 1)
+        if ((visualStart || startBlock).to < (visualEnd || endBlock).from - 1)
             between.push(piece(leftSide, top.bottom, rightSide, bottom.top));
-        else if (top.bottom < bottom.top && bottom.top - top.bottom < 4)
+        else if (top.bottom < bottom.top && blockAt(view, (top.bottom + bottom.top) / 2).type == BlockType.Text)
             top.bottom = bottom.top = (top.bottom + bottom.top) / 2;
         return pieces(top).concat(between).concat(pieces(bottom));
     }
@@ -7405,8 +7420,12 @@ function measureRange(view, range) {
     function drawForLine(from, to, line) {
         let top = 1e9, bottom = -1e9, horizontal = [];
         function addSpan(from, fromOpen, to, toOpen, dir) {
-            let fromCoords = view.coordsAtPos(from, from == line.to ? -1 : 1);
-            let toCoords = view.coordsAtPos(to, to == line.from ? 1 : -1);
+            // Passing 2/-2 is a kludge to force the view to return
+            // coordinates on the proper side of block widgets, since
+            // normalizing the side there, though appropriate for most
+            // coordsAtPos queries, would break selection drawing.
+            let fromCoords = view.coordsAtPos(from, (from == line.to ? -2 : 2));
+            let toCoords = view.coordsAtPos(to, (to == line.from ? 2 : -2));
             top = Math.min(fromCoords.top, toCoords.top, top);
             bottom = Math.max(fromCoords.bottom, toCoords.bottom, bottom);
             if (dir == Direction.LTR)
@@ -7435,6 +7454,10 @@ function measureRange(view, range) {
         if (horizontal.length == 0)
             addSpan(start, from == null, end, to == null, view.textDirection);
         return { top, bottom, horizontal };
+    }
+    function drawForWidget(block, top) {
+        let y = contentRect.top + (top ? block.top : block.bottom);
+        return { top: y, bottom: y, horizontal: [] };
     }
 }
 function measureCursor(view, cursor, primary) {

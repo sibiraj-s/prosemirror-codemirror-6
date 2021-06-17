@@ -1,6 +1,6 @@
 import { c as crelt } from './index.es-7838cc22.js';
-import { j as joinUp, l as lift, b as selectParentNode, w as wrapIn, s as setBlockType } from './index.es-d724ea74.js';
-import { b as PluginKey, P as Plugin, M as Mapping } from './index.es-131ba933.js';
+import { j as joinUp, l as lift, b as selectParentNode, w as wrapIn, s as setBlockType } from './index.es-75c60995.js';
+import { b as PluginKey, P as Plugin, M as Mapping } from './index.es-645c8237.js';
 
 var GOOD_LEAF_SIZE = 200;
 

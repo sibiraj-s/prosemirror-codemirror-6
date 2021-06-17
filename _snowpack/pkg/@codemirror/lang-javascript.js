@@ -1,6 +1,6 @@
-import { D as DefaultBufferLength, k as NodeSet, m as NodeType, n as stringInput, T as Tree, o as TreeBuffer, N as NodeProp, p as snippetCompletion, L as LezerLanguage, q as indentNodeProp, r as continuedIndent, t as flatIndent, u as delimitedIndent, v as foldNodeProp, w as foldInside, x as styleTags, y as tags, z as LanguageSupport, A as ifNotIn, B as completeFromList } from '../common/index-6f08f71d.js';
+import { D as DefaultBufferLength, k as NodeSet, m as NodeType, n as stringInput, T as Tree, o as TreeBuffer, N as NodeProp, p as snippetCompletion, L as LezerLanguage, q as indentNodeProp, r as continuedIndent, t as flatIndent, u as delimitedIndent, v as foldNodeProp, w as foldInside, x as styleTags, y as tags, z as LanguageSupport, A as ifNotIn, B as completeFromList } from '../common/index-41703f25.js';
 import '../common/index-c694cd06.js';
-import '../common/index-4410d11b.js';
+import '../common/index-6e154c1b.js';
 import '../common/index.es-6148ba8b.js';
 
 /* SNOWPACK PROCESS POLYFILL (based on https://github.com/calvinmetcalf/node-process-es6) */

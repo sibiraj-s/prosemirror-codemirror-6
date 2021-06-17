@@ -1,4 +1,4 @@
-import { d as Schema } from './common/index.es-efe5e4e0.js';
+import { d as Schema } from './common/index.es-53853fde.js';
 
 var pDOM = ["p", 0], blockquoteDOM = ["blockquote", 0], hrDOM = ["hr"],
       preDOM = ["pre", ["code", 0]], brDOM = ["br"];

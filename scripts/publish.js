@@ -1,7 +1,6 @@
 import util from 'node:util';
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
-
 import prompts from 'prompts';
 import ghpages from 'gh-pages';
 import chalk from 'chalk';
@@ -36,7 +35,7 @@ const publish = async () => {
       return;
     }
 
-    await fs.promises.writeFile(path.join(process.cwd(), 'build', '.nojekyll'), '', 'utf-8');
+    await fs.writeFile(path.join(process.cwd(), 'build', '.nojekyll'), '', 'utf-8');
     console.log(chalk.green(`\nCreated ${chalk.cyan("'.nojekyll'")} file in the build directory`));
 
     await publishAsync('build', ghPagesOptions);

@@ -18,8 +18,8 @@
   "dependencies": {
     "@codemirror/basic-setup": "^0.19.1",
     "@codemirror/lang-javascript": "^0.19.7",
-    "@codemirror/state": "^0.19.8",
-    "@codemirror/view": "^0.19.42",
+    "@codemirror/state": "^0.19.9",
+    "@codemirror/view": "^0.19.44",
     "prosemirror-commands": "^1.2.1",
     "prosemirror-example-setup": "^1.1.2",
     "prosemirror-menu": "^1.1.4",

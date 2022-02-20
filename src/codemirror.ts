@@ -3,7 +3,7 @@ import { EditorView, NodeView } from 'prosemirror-view';
 import { Schema, Node as ProsemirrorNode, NodeSpec } from 'prosemirror-model';
 import { nodes as basicNodes, marks } from 'prosemirror-schema-basic';
 import { exitCode } from 'prosemirror-commands';
-import { EditorState as CMState, Transaction as CMTransaction, Text } from '@codemirror/state';
+import { EditorState as CMState, Transaction as CMTransaction } from '@codemirror/state';
 import { Command, EditorView as CMView, keymap } from '@codemirror/view';
 import { basicSetup } from '@codemirror/basic-setup';
 import { javascript } from '@codemirror/lang-javascript';
@@ -92,38 +92,36 @@ export class CodeMirrorView implements NodeView {
       doc: this.node.textContent,
       extensions: [
         changeFilter,
+        keymap.of([
+          {
+            key: 'ArrowUp',
+            run: this.mayBeEscape('line', -1),
+          },
+          {
+            key: 'ArrowLeft',
+            run: this.mayBeEscape('char', -1),
+          },
+          {
+            key: 'ArrowDown',
+            run: this.mayBeEscape('line', 1),
+          },
+          {
+            key: 'ArrowRight',
+            run: this.mayBeEscape('char', 1),
+          },
+          {
+            key: 'Ctrl-Enter',
+            run() {
+              if (exitCode(view.state, view.dispatch)) {
+                view.focus();
+                return true;
+              }
+              return false;
+            },
+          },
+        ]),
         basicSetup,
         javascript(),
-        keymap.of([
-          ...[
-            {
-              key: 'ArrowUp',
-              run: this.mayBeEscape('line', -1),
-            },
-            {
-              key: 'ArrowLeft',
-              run: this.mayBeEscape('char', -1),
-            },
-            {
-              key: 'ArrowDown',
-              run: this.mayBeEscape('line', 1),
-            },
-            {
-              key: 'ArrowRight',
-              run: this.mayBeEscape('char', 1),
-            },
-            {
-              key: 'Ctrl-Enter',
-              run() {
-                if (exitCode(this.view.state, this.view.dispatch)) {
-                  this.view.focus();
-                  return true;
-                }
-                return false;
-              },
-            },
-          ],
-        ]),
       ],
     });
 
@@ -163,7 +161,8 @@ export class CodeMirrorView implements NodeView {
       }
 
       const content = change.text ? schema.text(change.text) : null;
-      const tr = this.view.state.tr.replaceWith(change.from + start, change.to + start, content);
+
+      const tr = this.view.state.tr.replaceWith(change.from + start, change.to + start, content as ProsemirrorNode);
       this.view.dispatch(tr);
       this.forwardSelection();
     }

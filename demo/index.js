@@ -64,12 +64,19 @@ const state = EditorState.create({
   }),
 });
 
-new EditorView(document.querySelector('#editor'), {
+const editor = new EditorView(document.querySelector('#editor'), {
   state,
   nodeViews: {
     code_mirror: (node, view, getPos) =>
-      new CodeMirrorView(node, view, getPos, {
-        extensions: [basicSetup, javascript()],
+      new CodeMirrorView({
+        node,
+        view,
+        getPos,
+        cmOptions: {
+          extensions: [basicSetup, javascript()],
+        },
       }),
   },
 });
+
+editor.focus();

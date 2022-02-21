@@ -1,0 +1,15 @@
+extends:
+  - pegasus
+
+overrides:
+  - files: '**/*.ts'
+    extends:
+      - pegasus/typescript
+    parserOptions:
+      project: './tsconfig.json'
+  - files: lib/**/*.ts'
+    parserOptions:
+      project: './tsconfig.lib.json'
+  - files: 'demo/**'
+    env:
+      browser: true

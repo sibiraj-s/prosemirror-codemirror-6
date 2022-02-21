@@ -15,6 +15,7 @@
     "dev": "snowpack dev",
     "build:demo": "snowpack build",
     "build": "tsc -p tsconfig.lib.json",
+    "lint": "eslint . --ext .js,.ts --ignore-path .gitignore",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
   },
@@ -39,12 +40,14 @@
     "@types/prosemirror-state": "^1.2.8",
     "@types/prosemirror-view": "^1.23.1",
     "commitlint-config-non-conventional": "^1.0.1",
-    "prosemirror-example-setup": "^1.1.2",
-    "prosemirror-menu": "^1.1.4",
-    "prosemirror-schema-basic": "^1.1.2",
+    "eslint": "^8.9.0",
+    "eslint-config-pegasus": "^3.2.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4",
     "prettier": "^2.5.1",
+    "prosemirror-example-setup": "^1.1.2",
+    "prosemirror-menu": "^1.1.4",
+    "prosemirror-schema-basic": "^1.1.2",
     "snowpack": "^3.8.8",
     "typescript": "^4.5.5"
   }

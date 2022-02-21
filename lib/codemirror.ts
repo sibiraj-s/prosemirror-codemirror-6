@@ -2,60 +2,52 @@ import { Selection, TextSelection } from 'prosemirror-state';
 import { EditorView, NodeView } from 'prosemirror-view';
 import { Node as ProsemirrorNode } from 'prosemirror-model';
 import { exitCode } from 'prosemirror-commands';
-import { EditorState as CMState, Extension, Transaction as CMTransaction } from '@codemirror/state';
+import { EditorState as CMState, Transaction as CMTransaction } from '@codemirror/state';
 import { Command, EditorView as CMView, keymap } from '@codemirror/view';
 
-interface ComputeChange {
-  from: number;
-  to: number;
-  text: string;
-}
-
-interface CMOptions {
-  extensions: Extension;
-}
-
-const defaultCMOptions: CMOptions = {
-  extensions: [],
-};
-
-type GetPos = (() => number) | boolean;
+import { ComputeChange, CodeMirrorViewOptions } from './types';
 
 const computeChange = (oldVal: string, newVal: string): ComputeChange | null => {
   if (oldVal === newVal) {
     return null;
   }
+
   let start = 0;
   let oldEnd = oldVal.length;
   let newEnd = newVal.length;
 
   while (start < oldEnd && oldVal.charCodeAt(start) === newVal.charCodeAt(start)) {
-    ++start;
+    start += 1;
   }
 
   while (oldEnd > start && newEnd > start && oldVal.charCodeAt(oldEnd - 1) === newVal.charCodeAt(newEnd - 1)) {
-    oldEnd--;
-    newEnd--;
+    oldEnd -= 1;
+    newEnd -= 1;
   }
+
   return { from: start, to: oldEnd, text: newVal.slice(start, newEnd) };
 };
 
 class CodeMirrorView implements NodeView {
   node: ProsemirrorNode;
+
   view: EditorView;
+
   dom: HTMLElement;
 
   cm: CMView;
 
   getPos: () => number;
+
   updating = false;
 
-  constructor(node: ProsemirrorNode, view: EditorView, getPos: GetPos, cmOptions: CMOptions = defaultCMOptions) {
+  constructor(options: CodeMirrorViewOptions) {
     // Store for later
-    this.node = node;
-    this.view = view;
+    this.node = options.node;
+    this.view = options.view;
+    const cmExtensions = options.cmOptions?.extensions || [];
 
-    this.getPos = getPos as () => number;
+    this.getPos = options.getPos as () => number;
 
     const changeFilter = CMState.changeFilter.of((tr) => {
       if (!tr.docChanged && !this.updating) {
@@ -95,16 +87,16 @@ class CodeMirrorView implements NodeView {
           },
           {
             key: 'Ctrl-Enter',
-            run() {
-              if (exitCode(view.state, view.dispatch)) {
-                view.focus();
+            run: () => {
+              if (exitCode(this.view.state, this.view.dispatch)) {
+                this.view.focus();
                 return true;
               }
               return false;
             },
           },
         ]),
-        cmOptions.extensions,
+        cmExtensions,
       ],
     });
 
@@ -116,7 +108,7 @@ class CodeMirrorView implements NodeView {
       return;
     }
 
-    const state = this.view.state;
+    const { state } = this.view;
     const selection = this.asProseMirrorSelection(state.doc);
 
     if (!selection.eq(state.selection)) {
@@ -176,7 +168,7 @@ class CodeMirrorView implements NodeView {
         return false;
       }
 
-      let targetPos = this.getPos() + (dir < 0 ? 0 : this.node.nodeSize);
+      const targetPos = this.getPos() + (dir < 0 ? 0 : this.node.nodeSize);
       const pmSelection = Selection.near(this.view.state.doc.resolve(targetPos), dir);
       this.view.dispatch(this.view.state.tr.setSelection(pmSelection).scrollIntoView());
       this.view.focus();

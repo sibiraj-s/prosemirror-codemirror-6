@@ -3,15 +3,28 @@ import { EditorView } from 'prosemirror-view';
 import { buildMenuItems, exampleSetup } from 'prosemirror-example-setup';
 import { MenuItem } from 'prosemirror-menu';
 import { setBlockType } from 'prosemirror-commands';
+import { Schema } from 'prosemirror-model';
+import { nodes as basicNodes, marks } from 'prosemirror-schema-basic';
+import { basicSetup } from '@codemirror/basic-setup';
+import { javascript } from '@codemirror/lang-javascript';
 
 import 'prosemirror-menu/style/menu.css';
 import 'prosemirror-example-setup/style/style.css';
 import 'prosemirror-view/style/prosemirror.css';
 import './index.scss';
-import './editor.scss';
 
-import { schema, CodeMirrorView } from './codemirror';
+import { node as codeMirrorNode, CodeMirrorView } from '../lib';
 import doc from './doc';
+
+const nodes = {
+  ...basicNodes,
+  code_mirror: codeMirrorNode,
+};
+
+const schema = new Schema({
+  nodes,
+  marks,
+});
 
 const nodeIsActive = (state, nodeType) => {
   if (!(state.selection instanceof NodeSelection)) {
@@ -54,6 +67,9 @@ const state = EditorState.create({
 new EditorView(document.querySelector('#editor'), {
   state,
   nodeViews: {
-    code_mirror: (node, view, getPos) => new CodeMirrorView(node, view, getPos),
+    code_mirror: (node, view, getPos) =>
+      new CodeMirrorView(node, view, getPos, {
+        extensions: [basicSetup, javascript()],
+      }),
   },
 });

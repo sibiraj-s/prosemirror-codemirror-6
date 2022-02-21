@@ -1,35 +1,9 @@
 import { Selection, TextSelection } from 'prosemirror-state';
 import { EditorView, NodeView } from 'prosemirror-view';
-import { Schema, Node as ProsemirrorNode, NodeSpec } from 'prosemirror-model';
-import { nodes as basicNodes, marks } from 'prosemirror-schema-basic';
+import { Node as ProsemirrorNode } from 'prosemirror-model';
 import { exitCode } from 'prosemirror-commands';
-import { EditorState as CMState, Transaction as CMTransaction } from '@codemirror/state';
+import { EditorState as CMState, Extension, Transaction as CMTransaction } from '@codemirror/state';
 import { Command, EditorView as CMView, keymap } from '@codemirror/view';
-import { basicSetup } from '@codemirror/basic-setup';
-import { javascript } from '@codemirror/lang-javascript';
-
-export const code_mirror: NodeSpec = {
-  content: 'text*',
-  marks: '',
-  group: 'block',
-  code: true,
-  defining: true,
-  isolating: true,
-  parseDOM: [{ tag: 'pre', preserveWhitespace: 'full' }],
-  toDOM() {
-    return ['pre', ['code', 0]];
-  },
-};
-
-const nodes = {
-  ...basicNodes,
-  code_mirror,
-};
-
-export const schema = new Schema({
-  nodes,
-  marks,
-});
 
 interface ComputeChange {
   from: number;
@@ -37,7 +11,17 @@ interface ComputeChange {
   text: string;
 }
 
-function computeChange(oldVal: string, newVal: string): ComputeChange | null {
+interface CMOptions {
+  extensions: Extension;
+}
+
+const defaultCMOptions: CMOptions = {
+  extensions: [],
+};
+
+type GetPos = (() => number) | boolean;
+
+const computeChange = (oldVal: string, newVal: string): ComputeChange | null => {
   if (oldVal === newVal) {
     return null;
   }
@@ -54,9 +38,9 @@ function computeChange(oldVal: string, newVal: string): ComputeChange | null {
     newEnd--;
   }
   return { from: start, to: oldEnd, text: newVal.slice(start, newEnd) };
-}
+};
 
-export class CodeMirrorView implements NodeView {
+class CodeMirrorView implements NodeView {
   node: ProsemirrorNode;
   view: EditorView;
   dom: HTMLElement;
@@ -66,7 +50,7 @@ export class CodeMirrorView implements NodeView {
   getPos: () => number;
   updating = false;
 
-  constructor(node: ProsemirrorNode, view: EditorView, getPos: (() => number) | boolean) {
+  constructor(node: ProsemirrorNode, view: EditorView, getPos: GetPos, cmOptions: CMOptions = defaultCMOptions) {
     // Store for later
     this.node = node;
     this.view = view;
@@ -120,8 +104,7 @@ export class CodeMirrorView implements NodeView {
             },
           },
         ]),
-        basicSetup,
-        javascript(),
+        cmOptions.extensions,
       ],
     });
 
@@ -160,7 +143,7 @@ export class CodeMirrorView implements NodeView {
         return;
       }
 
-      const content = change.text ? schema.text(change.text) : null;
+      const content = change.text ? this.view.state.schema.text(change.text) : null;
 
       const tr = this.view.state.tr.replaceWith(change.from + start, change.to + start, content as ProsemirrorNode);
       this.view.dispatch(tr);
@@ -244,3 +227,5 @@ export class CodeMirrorView implements NodeView {
     this.cm.destroy();
   }
 }
+
+export default CodeMirrorView;

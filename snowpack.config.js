@@ -6,7 +6,8 @@ export default {
   plugins: ['@snowpack/plugin-sass'],
   mount: {
     public: { url: '/', static: true },
-    src: { url: '/dist' },
+    demo: { url: '/demo' },
+    lib: { url: '/lib' },
   },
   buildOptions: {
     baseUrl: '/prosemirror-codemirror-6/',

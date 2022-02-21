@@ -41,7 +41,7 @@ menu.blockMenu[0].push(
     run(state, dispatch) {
       return setBlockType(schema.nodes.code_mirror)(state, dispatch);
     },
-  })
+  }),
 );
 
 const state = EditorState.create({
@@ -58,15 +58,14 @@ const element = document.querySelector('#editor');
 const editor = new EditorView(element, {
   state,
   nodeViews: {
-    code_mirror: (node, view, getPos) =>
-      new CodeMirrorView({
-        node,
-        view,
-        getPos,
-        cmOptions: {
-          extensions: [basicSetup, javascript()],
-        },
-      }),
+    code_mirror: (node, view, getPos) => new CodeMirrorView({
+      node,
+      view,
+      getPos,
+      cmOptions: {
+        extensions: [basicSetup, javascript()],
+      },
+    }),
   },
 });
 

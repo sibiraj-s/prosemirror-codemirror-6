@@ -161,9 +161,9 @@ class CodeMirrorView implements NodeView {
       const lastLine = state.doc.lineAt(state.doc.length).number;
 
       if (
-        hasSelection ||
-        pos.line !== (dir < 0 ? firstLine : lastLine) ||
-        (unit === 'char' && pos.ch !== (dir < 0 ? 0 : state.doc.line(pos.line).length))
+        hasSelection
+        || pos.line !== (dir < 0 ? firstLine : lastLine)
+        || (unit === 'char' && pos.ch !== (dir < 0 ? 0 : state.doc.line(pos.line).length))
       ) {
         return false;
       }

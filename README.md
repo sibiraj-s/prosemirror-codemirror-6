@@ -1,8 +1,53 @@
 # ProseMirror + CodeMirror 6
 
-Based on the example from https://prosemirror.net/examples/codemirror/
+Based on the example from https://prosemirror.net/examples/codemirror/. This is just an example setup and might not be very reusable.
 
 ## Getting Started
+
+```bash
+npm i prosemirror-codemirror-6
+```
+
+### Usage
+
+```ts
+import { EditorView } from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Schema } from 'prosemirror-model';
+import { nodes as basicNodes, marks } from 'prosemirror-schema-basic';
+import { CodeMirrorView, node as codeMirrorNode } from 'prosemirror-codemirror-6';
+import { basicSetup } from '@codemirror/basic-setup';
+import { javascript } from '@codemirror/lang-javascript';
+
+const nodes = {
+  ...basicNodes,
+  code_mirror: codeMirrorNode,
+};
+
+const schema = new Schema({
+  nodes,
+  marks,
+});
+
+const editor = new EditorView(element, {
+  state: EditorState.create({
+    schema,
+  }),
+  nodeViews: {
+    code_mirror: (node, view, getPos) =>
+      new CodeMirrorView({
+        node,
+        view,
+        getPos,
+        cmOptions: {
+          extensions: [basicSetup, javascript()],
+        },
+      }),
+  },
+});
+```
+
+## Contributing
 
 Install the dependencies
 
@@ -10,7 +55,7 @@ Install the dependencies
 npm install
 ```
 
-### Starting the development server
+Start the development server
 
 ```bash
 npm run dev

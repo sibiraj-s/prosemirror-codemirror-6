@@ -2,6 +2,7 @@ import { EditorState, NodeSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { buildMenuItems, exampleSetup } from 'prosemirror-example-setup';
 import { MenuItem } from 'prosemirror-menu';
+import { NodeType, Node as ProsemirrorNode } from 'prosemirror-model';
 import { setBlockType } from 'prosemirror-commands';
 import { basicSetup } from '@codemirror/basic-setup';
 import { javascript } from '@codemirror/lang-javascript';
@@ -15,7 +16,7 @@ import schema from './schema';
 import { CodeMirrorView } from '../lib';
 import doc from './doc';
 
-const nodeIsActive = (state, nodeType) => {
+const nodeIsActive = (state: EditorState, nodeType: NodeType) => {
   if (!(state.selection instanceof NodeSelection)) {
     return false;
   }
@@ -53,12 +54,12 @@ const state = EditorState.create({
   }),
 });
 
-const element = document.querySelector('#editor');
+const element = document.querySelector('#editor') as HTMLElement;
 
 const editor = new EditorView(element, {
   state,
   nodeViews: {
-    code_mirror: (node, view, getPos) => new CodeMirrorView({
+    code_mirror: (node: ProsemirrorNode, view: EditorView, getPos: () => number) => new CodeMirrorView({
       node,
       view,
       getPos,

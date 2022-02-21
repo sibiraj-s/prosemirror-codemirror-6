@@ -3,8 +3,6 @@ import { EditorView } from 'prosemirror-view';
 import { buildMenuItems, exampleSetup } from 'prosemirror-example-setup';
 import { MenuItem } from 'prosemirror-menu';
 import { setBlockType } from 'prosemirror-commands';
-import { Schema } from 'prosemirror-model';
-import { nodes as basicNodes, marks } from 'prosemirror-schema-basic';
 import { basicSetup } from '@codemirror/basic-setup';
 import { javascript } from '@codemirror/lang-javascript';
 
@@ -13,18 +11,9 @@ import 'prosemirror-example-setup/style/style.css';
 import 'prosemirror-view/style/prosemirror.css';
 import './index.scss';
 
-import { node as codeMirrorNode, CodeMirrorView } from '../lib';
+import schema from './schema';
+import { CodeMirrorView } from '../lib';
 import doc from './doc';
-
-const nodes = {
-  ...basicNodes,
-  code_mirror: codeMirrorNode,
-};
-
-const schema = new Schema({
-  nodes,
-  marks,
-});
 
 const nodeIsActive = (state, nodeType) => {
   if (!(state.selection instanceof NodeSelection)) {

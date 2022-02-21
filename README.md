@@ -1,6 +1,6 @@
 # ProseMirror + CodeMirror 6
 
-Based on the example from https://prosemirror.net/examples/codemirror/. This is just an example setup and might not be very reusable.
+Based on the example from https://prosemirror.net/examples/codemirror/. This is just an example setup and might not be very reusable. Use this to get something up-and-running quickly.
 
 ## Getting Started
 

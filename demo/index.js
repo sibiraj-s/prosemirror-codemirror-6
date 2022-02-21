@@ -64,7 +64,9 @@ const state = EditorState.create({
   }),
 });
 
-const editor = new EditorView(document.querySelector('#editor'), {
+const element = document.querySelector('#editor');
+
+const editor = new EditorView(element, {
   state,
   nodeViews: {
     code_mirror: (node, view, getPos) =>

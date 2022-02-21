@@ -1,6 +1,6 @@
 {
   "name": "prosemirror-codemirror-6",
-  "version": "0.0.0-example-repo",
+  "version": "0.0.0",
   "description": "ProseMirror with CodeMirror 6",
   "author": "sibiraj-s",
   "private": true,
@@ -11,6 +11,9 @@
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "dev": "snowpack dev",
     "build:demo": "snowpack build",

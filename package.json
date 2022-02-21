@@ -18,7 +18,7 @@
     "build:demo": "snowpack build",
     "build": "tsc -p tsconfig.lib.json",
     "lint": "eslint . --ext .js,.ts --ignore-path .gitignore",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 0",
     "prepare": "husky install"
   },
   "dependencies": {

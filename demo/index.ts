@@ -15,6 +15,7 @@ import './index.scss';
 import schema from './schema';
 import { CodeMirrorView } from '../lib';
 import doc from './doc';
+import { GetPos } from '../lib/types';
 
 const nodeIsActive = (state: EditorState, nodeType: NodeType) => {
   if (!(state.selection instanceof NodeSelection)) {
@@ -59,7 +60,7 @@ const element = document.querySelector('#editor') as HTMLElement;
 const editor = new EditorView(element, {
   state,
   nodeViews: {
-    code_mirror: (node: ProsemirrorNode, view: EditorView, getPos: () => number) => new CodeMirrorView({
+    code_mirror: (node: ProsemirrorNode, view: EditorView, getPos: GetPos) => new CodeMirrorView({
       node,
       view,
       getPos,

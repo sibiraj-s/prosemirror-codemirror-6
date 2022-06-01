@@ -12,7 +12,7 @@ interface CMOptions {
   extensions: Extension;
 }
 
-type GetPos = (() => number) | boolean;
+export type GetPos = () => number | undefined;
 
 export interface CodeMirrorViewOptions {
   node: ProsemirrorNode;

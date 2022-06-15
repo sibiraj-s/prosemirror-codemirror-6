@@ -1,6 +1,6 @@
 {
   "name": "prosemirror-codemirror-6",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "ProseMirror with CodeMirror 6",
   "author": "sibiraj-s",
   "license": "MIT",

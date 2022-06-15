@@ -13,6 +13,17 @@ All notable changes to this project will be documented in this file.
 > - Documentation
 > - Internal
 
+## v1.0.0 (2022-06-15)
+
+#### Dependency Updates
+
+- update `codemirror` to v6 stable ([beb0ce1](https://github.com/sibiraj-s/prosemirror-codemirror-6/commit/beb0ce1))
+- update `prosemirror-*` dependencies ([42cde02](https://github.com/sibiraj-s/prosemirror-codemirror-6/commit/42cde02))
+
+#### Internal
+
+- replace snowpack with vite ([4ce633d](https://github.com/sibiraj-s/prosemirror-codemirror-6/commit/4ce633d))
+
 ## v0.3.0 (2022-06-01)
 
 #### Dependency Updates

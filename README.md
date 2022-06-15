@@ -19,7 +19,7 @@ import { EditorState } from 'prosemirror-state';
 import { Schema } from 'prosemirror-model';
 import { nodes as basicNodes, marks } from 'prosemirror-schema-basic';
 import { CodeMirrorView, node as codeMirrorNode } from 'prosemirror-codemirror-6';
-import { basicSetup } from '@codemirror/basic-setup';
+import { minimalSetup } from 'codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 
 const nodes = {
@@ -43,7 +43,7 @@ const editor = new EditorView(element, {
         view,
         getPos,
         cmOptions: {
-          extensions: [basicSetup, javascript()],
+          extensions: [minimalSetup, javascript()],
         },
       }),
   },
@@ -67,5 +67,5 @@ npm run dev
 ### Related Links
 
 - ProseMirror - https://prosemirror.net/
-- CodeMirror 6 - https://codemirror.net/6/
+- CodeMirror 6 - https://codemirror.net
 - Migrating to CodeMirror 6 - https://codemirror.net/6/docs/migration/

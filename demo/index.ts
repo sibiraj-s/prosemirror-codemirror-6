@@ -4,7 +4,7 @@ import { buildMenuItems, exampleSetup } from 'prosemirror-example-setup';
 import { MenuItem } from 'prosemirror-menu';
 import { NodeType, Node as ProsemirrorNode } from 'prosemirror-model';
 import { setBlockType } from 'prosemirror-commands';
-import { basicSetup } from '@codemirror/basic-setup';
+import { minimalSetup } from 'codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 
 import 'prosemirror-menu/style/menu.css';
@@ -65,7 +65,7 @@ const editor = new EditorView(element, {
       view,
       getPos,
       cmOptions: {
-        extensions: [basicSetup, javascript()],
+        extensions: [minimalSetup, javascript()],
       },
     }),
   },

@@ -14,8 +14,8 @@
     "dist/"
   ],
   "scripts": {
-    "dev": "snowpack dev",
-    "build:demo": "snowpack build",
+    "dev": "vite dev",
+    "build:demo": "vite build --base=/prosemirror-codemirror-6/",
     "build": "tsc -p tsconfig.lib.json",
     "lint": "eslint . --ext .js,.ts --ignore-path .gitignore",
     "test": "jest",
@@ -33,7 +33,6 @@
     "@codemirror/lang-javascript": "^6.0.0",
     "@commitlint/cli": "^17.0.2",
     "@jest/globals": "^28.1.1",
-    "@snowpack/plugin-sass": "^1.4.0",
     "codemirror": "^6.0.0",
     "commitlint-config-non-conventional": "^1.0.1",
     "eslint": "^8.17.0",
@@ -46,8 +45,8 @@
     "prosemirror-example-setup": "^1.2.0",
     "prosemirror-menu": "^1.2.0",
     "prosemirror-schema-basic": "^1.2.0",
-    "snowpack": "^3.8.8",
     "ts-jest": "^28.0.5",
-    "typescript": "^4.7.3"
+    "typescript": "^4.7.3",
+    "vite": "^2.9.12"
   }
 }

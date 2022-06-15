@@ -32,8 +32,8 @@
   border: 1px solid #c5c5c5;
   height: auto;
   margin-bottom: 0.7rem;
+}
 
-  pre {
-    white-space: pre !important;
-  }
+.cm-editor pre {
+  white-space: pre !important;
 }

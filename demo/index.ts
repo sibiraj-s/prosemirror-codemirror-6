@@ -10,7 +10,7 @@ import { javascript } from '@codemirror/lang-javascript';
 import 'prosemirror-menu/style/menu.css';
 import 'prosemirror-example-setup/style/style.css';
 import 'prosemirror-view/style/prosemirror.css';
-import './index.scss';
+import './index.css';
 
 import schema from './schema';
 import { CodeMirrorView } from '../lib';

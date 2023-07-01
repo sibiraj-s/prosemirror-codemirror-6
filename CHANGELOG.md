@@ -13,6 +13,19 @@ All notable changes to this project will be documented in this file.
 > - Documentation
 > - Internal
 
+## v1.0.1 (2022-06-15)
+
+#### Dependency Updates
+
+- update `codemirror-*` dependencies ([5732e0b](https://github.com/sibiraj-s/prosemirror-codemirror-6/commit/5732e0b))
+- update `prosemirror-*` dependencies ([5732e0b](https://github.com/sibiraj-s/prosemirror-codemirror-6/commit/5732e0b))
+
+#### Internal
+
+- replace jest with vitest ([19b02f2](https://github.com/sibiraj-s/prosemirror-codemirror-6/commit/19b02f2))
+- configure publint ([3a85217](https://github.com/sibiraj-s/prosemirror-codemirror-6/commit/3a85217))
+- add npm package provenance ([fb106da](https://github.com/sibiraj-s/prosemirror-codemirror-6/commit/fb106da))
+
 ## v1.0.0 (2022-06-15)
 
 #### Dependency Updates

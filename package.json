@@ -8,7 +8,10 @@
   "homepage": "https://github.com/sibiraj-s/prosemirror-codemirror-6",
   "bugs": "https://github.com/sibiraj-s/prosemirror-codemirror-6/issues",
   "type": "module",
-  "exports": "./dist/index.js",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "default": "./dist/index.js"
+  },
   "types": "./dist/index.d.ts",
   "files": [
     "dist/"
@@ -43,6 +46,7 @@
     "prosemirror-example-setup": "^1.2.2",
     "prosemirror-menu": "^1.2.2",
     "prosemirror-schema-basic": "^1.2.2",
+    "publint": "^0.1.13",
     "typescript": "^5.1.6",
     "vite": "^4.3.9",
     "vitest": "^0.32.2"

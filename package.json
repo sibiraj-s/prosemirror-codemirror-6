@@ -33,22 +33,22 @@
     "prosemirror-view": "^1.31.5"
   },
   "devDependencies": {
-    "@codemirror/lang-javascript": "^6.1.9",
-    "@commitlint/cli": "^17.6.6",
+    "@codemirror/lang-javascript": "^6.2.1",
+    "@commitlint/cli": "^18.4.3",
     "codemirror": "^6.0.1",
     "commitlint-config-non-conventional": "^1.0.1",
-    "eslint": "^8.44.0",
-    "eslint-config-pegasus": "^3.5.0",
+    "eslint": "^8.55.0",
+    "eslint-config-pegasus": "^5.0.0",
     "husky": "^8.0.3",
-    "jsdom": "^22.1.0",
-    "lint-staged": "^13.2.3",
-    "prettier": "^2.8.8",
+    "jsdom": "^23.0.1",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.0",
     "prosemirror-example-setup": "^1.2.2",
-    "prosemirror-menu": "^1.2.2",
+    "prosemirror-menu": "^1.2.4",
     "prosemirror-schema-basic": "^1.2.2",
-    "publint": "^0.1.13",
-    "typescript": "^5.1.6",
-    "vite": "^4.3.9",
-    "vitest": "^0.32.2"
+    "publint": "^0.2.6",
+    "typescript": "^5.3.2",
+    "vite": "^5.0.5",
+    "vitest": "^1.0.1"
   }
 }

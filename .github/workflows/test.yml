@@ -1,7 +1,7 @@
 name: Tests
 
 env:
-  NODE_VERSION: 22
+  NODE_VERSION: 24
 
 on:
   push:
@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
@@ -31,7 +31,7 @@ jobs:
 
       - name: Build
         run: npm run build
-        env:
+        env: 
           NODE_ENV: production
 
       - name: Test

@@ -18,6 +18,10 @@ jobs:
       contents: read
       id-token: write
 
+    environment:
+      name: npm
+      url: https://npm.im/prosemirror-codemirror-6
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6

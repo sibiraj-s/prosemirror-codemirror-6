@@ -2,4 +2,4 @@ npm run build
 npm test -- --run
 
 echo "publint:"
-npx --no publint
+publint

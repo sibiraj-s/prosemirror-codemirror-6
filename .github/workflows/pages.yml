@@ -41,7 +41,7 @@ jobs:
           path: ./build
 
   deploy:
-    needs: build 
+    needs: build
     runs-on: ubuntu-latest
 
     permissions:

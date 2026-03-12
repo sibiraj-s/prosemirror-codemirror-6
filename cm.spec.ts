@@ -18,11 +18,12 @@ describe('CodeMirror', () => {
     const editor = new EditorView(element, {
       state,
       nodeViews: {
-        code_mirror: (node: any, view: any, getPos: any) => new CodeMirrorView({
-          node,
-          view,
-          getPos,
-        }),
+        code_mirror: (node: any, view: any, getPos: any) =>
+          new CodeMirrorView({
+            node,
+            view,
+            getPos,
+          }),
       },
     });
 

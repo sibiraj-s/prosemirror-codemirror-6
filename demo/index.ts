@@ -60,14 +60,15 @@ const element = document.querySelector('#editor') as HTMLElement;
 const editor = new EditorView(element, {
   state,
   nodeViews: {
-    code_mirror: (node: ProsemirrorNode, view: EditorView, getPos: GetPos) => new CodeMirrorView({
-      node,
-      view,
-      getPos,
-      cmOptions: {
-        extensions: [minimalSetup, javascript()],
-      },
-    }),
+    code_mirror: (node: ProsemirrorNode, view: EditorView, getPos: GetPos) =>
+      new CodeMirrorView({
+        node,
+        view,
+        getPos,
+        cmOptions: {
+          extensions: [minimalSetup, javascript()],
+        },
+      }),
   },
 });
 
